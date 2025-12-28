@@ -1,198 +1,350 @@
-OCTYPE html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="es">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Get Coins</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TikTok Coins – Cinematic Demo</title>
 
 <style>
 :root{
-  --bg:#0b0b0d;
-  --panel:#121214;
-  --card:#17171b;
-  --card2:#1c1c22;
-  --border:#2a2a30;
-  --text:#ffffff;
-  --sub:#b3b3b8;
-  --accent:#fe2c55;
-  --accent-soft:rgba(254,44,85,.18);
+  --bg:#000;
+  --card:#1c1c1e;
+  --field:#2c2c2e;
+  --pink:#ff0050;
+  --text:#fff;
+  --muted:#9b9b9b;
 }
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+
+*{
+  box-sizing:border-box;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto;
+}
+
 body{
   margin:0;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial;
   background:var(--bg);
   color:var(--text);
+  display:flex;
+  justify-content:center;
 }
 
-/* Safe areas */
-.safe-top{padding-top:env(safe-area-inset-top)}
-.safe-bottom{padding-bottom:env(safe-area-inset-bottom)}
+.app{
+  width:100%;
+  max-width:430px;
+  min-height:100vh;
+  padding:16px;
+}
 
-/* Header */
 .header{
-  position:sticky;top:0;z-index:5;
-  background:linear-gradient(to bottom,#0b0b0d 80%,rgba(11,11,13,.6));
-  border-bottom:1px solid #0f0f12;
+  text-align:center;
+  font-size:22px;
+  font-weight:700;
+  margin:12px 0 20px;
 }
-.header .row{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:10px 14px 8px;
-}
-.icon{
-  width:28px;height:28px;border-radius:8px;
-  display:grid;place-items:center;color:#fff;
-}
-.title{font-size:17px;font-weight:600}
 
-/* Balance */
-.balance{
-  padding:6px 16px 8px;
-  font-size:13px;color:var(--sub)
+.card{
+  background:var(--card);
+  border-radius:26px;
+  padding:18px;
 }
-.balance b{color:#fff}
 
-/* Grid */
-.grid{
+/* USER */
+.user{display:flex;gap:12px;align-items:center}
+.avatar{
+  width:48px;height:48px;border-radius:50%;
+  background:var(--field);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;
+}
+.user input{
+  flex:1;
+  background:var(--field);
+  border:none;outline:none;
+  color:white;
+  padding:14px;
+  border-radius:16px;
+  font-size:16px;
+}
+
+/* BALANCE */
+.balance{text-align:center;margin:28px 0}
+.balance .coins{
+  font-size:44px;
+  font-weight:800;
+  transition:.25s;
+}
+.balance span{font-size:14px;color:var(--muted)}
+
+/* PACKAGES */
+.packages{
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:12px;
-  padding:12px 16px 110px;
 }
-.card{
-  background:linear-gradient(180deg,var(--card),var(--card2));
-  border:1px solid var(--border);
-  border-radius:16px;
-  padding:16px 12px 14px;
+.pkg{
+  background:var(--field);
+  border-radius:20px;
+  padding:18px 10px;
   text-align:center;
-  transition:.15s transform,.15s border,.15s box-shadow;
+  font-weight:700;
+  cursor:pointer;
+  transition:.12s;
 }
-.card:active{transform:scale(.98)}
-.card .coins{font-size:22px;font-weight:700;margin-bottom:6px}
-.card .price{font-size:13px;color:var(--sub)}
-.card.featured{
-  box-shadow:0 0 0 2px var(--accent-soft) inset;
-}
-.card.selected{
-  border:2px solid var(--accent);
-  box-shadow:0 0 0 3px var(--accent-soft);
-}
+.pkg span{display:block;font-size:13px;color:var(--muted)}
+.pkg:active{transform:scale(.96)}
+.pkg.disabled{opacity:.35;pointer-events:none}
 
-/* Bottom CTA */
-.bottom{
-  position:fixed;left:0;right:0;bottom:0;z-index:6;
-  background:linear-gradient(to top,#0b0b0d 70%,rgba(11,11,13,.6));
-}
-.bottom .wrap{padding:10px 16px 16px}
-.btn{
-  width:100%;
-  background:var(--accent);
-  color:#fff;border:none;border-radius:12px;
-  padding:14px;font-size:17px;font-weight:600;
-}
-
-/* Sheet (Apple-style) */
+/* OVERLAY */
 .overlay{
-  position:fixed;inset:0;background:rgba(0,0,0,.55);
-  display:none;align-items:flex-end;justify-content:center;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.45);
+  backdrop-filter:blur(18px);
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+  z-index:999;
 }
+
+/* SHEET */
 .sheet{
   width:100%;
-  background:#141418;
-  border-radius:18px 18px 0 0;
-  border:1px solid var(--border);
-  padding:14px 16px calc(16px + env(safe-area-inset-bottom));
-}
-.handle{
-  width:36px;height:4px;border-radius:4px;background:#2a2a30;
-  margin:0 auto 10px;
-}
-.sheet h3{margin:6px 0 4px;font-size:18px}
-.sheet p{margin:0 0 12px;color:var(--sub)}
-.rowline{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:12px 0;border-top:1px solid #202026;
-}
-.primary{
-  width:100%;margin-top:10px;
-  background:var(--accent);border:none;color:#fff;
-  border-radius:12px;padding:14px;font-size:17px;font-weight:600;
+  max-width:430px;
+  background:var(--card);
+  border-radius:26px 26px 0 0;
+  padding:22px;
+  animation:up .35s cubic-bezier(.22,.61,.36,1);
 }
 
-/* Spinner */
-.spinner{
-  width:34px;height:34px;border-radius:50%;
-  border:3px solid #333;border-top-color:var(--accent);
-  animation:spin 1s linear infinite;margin:8px auto 10px;
+@keyframes up{
+  from{transform:translateY(120px);opacity:0}
+  to{transform:none;opacity:1}
 }
-@keyframes spin{to{transform:rotate(360deg)}}
+
+.sheet button{
+  width:100%;
+  margin-top:12px;
+  padding:14px;
+  border:none;
+  border-radius:16px;
+  font-size:16px;
+  font-weight:600;
+}
+
+.confirm{background:var(--pink);color:#fff}
+.cancel{background:var(--field);color:#fff}
+
+/* SUCCESS */
+.success{text-align:center}
+.check{
+  width:96px;height:96px;border-radius:50%;
+  background:var(--pink);
+  margin:10px auto 14px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:46px;font-weight:900;
+  animation:check .4s;
+}
+@keyframes check{
+  0%{transform:scale(.4)}
+  60%{transform:scale(1.15)}
+  100%{transform:scale(1)}
+}
+
+/* COINS + PARTICLES */
+.coin{
+  position:fixed;
+  font-size:26px;
+  pointer-events:none;
+  transition:transform .9s cubic-bezier(.22,.61,.36,1), opacity .9s;
+  z-index:2000;
+}
+.particle{
+  position:fixed;
+  width:6px;height:6px;
+  background:#FFD700;
+  border-radius:50%;
+  pointer-events:none;
+}
 </style>
 </head>
 
 <body>
-<div class="safe-top"></div>
+<div class="app">
+  <div class="header">TikTok</div>
 
-<div class="header">
-  <div class="row">
-    <div class="icon">✕</div>
-    <div class="title">Get Coins</div>
-    <div class="icon">?</div>
+  <div class="card">
+    <div class="user">
+      <div class="avatar" id="avatar">U</div>
+      <input id="user" placeholder="@usuario">
+    </div>
+
+    <div class="balance">
+      <div class="coins" id="saldo">0</div>
+      <span>Monedas</span>
+    </div>
+
+    <div class="packages">
+      <div class="pkg" data-c="70">70<span>Monedas</span></div>
+      <div class="pkg" data-c="350">350<span>Monedas</span></div>
+      <div class="pkg" data-c="700">700<span>Monedas</span></div>
+      <div class="pkg" data-c="1400">1400<span>Monedas</span></div>
+    </div>
   </div>
 </div>
 
-<div class="balance">Balance: <b>92,538,280</b> coins</div>
-
-<div class="grid">
-  <div class="card" onclick="select(this)">
-    <div class="coins">70</div><div class="price">$0.74</div>
-  </div>
-  <div class="card" onclick="select(this)">
-    <div class="coins">350</div><div class="price">$3.70</div>
-  </div>
-  <div class="card featured" onclick="select(this)">
-    <div class="coins">700</div><div class="price">$7.40</div>
-  </div>
-  <div class="card" onclick="select(this)">
-    <div class="coins">1,400</div><div class="price">$14.80</div>
-  </div>
-  <div class="card" onclick="select(this)">
-    <div class="coins">10,000</div><div class="price">$2.00</div>
-  </div>
-  <div class="card" onclick="select(this)">
-    <div class="coins">100,000</div><div class="price">$20.00</div>
-  </div>
-</div>
-
-<div class="bottom safe-bottom">
-  <div class="wrap">
-    <button class="btn" onclick="openSheet()">Recharge</button>
-  </div>
-</div>
-
-<div class="overlay" id="ov">
-  <div class="sheet">
-    <div class="handle"></div>
-    <h3>Confirm purchase</h3>
-    <p>Coins will be added to your balance.</p>
-    <div class="rowline"><span>Payment</span><span>Apple Pay</span></div>
-    <div class="rowline"><span>Total</span><b>$7.40</b></div>
-    <div class="spinner"></div>
-    <button class="primary" onclick="closeSheet()">Done</button>
-  </div>
-</div>
+<audio id="successSound">
+  <source src="data:audio/mp3;base64,//uQx..." type="audio/mp3">
+</audio>
 
 <script>
-const cards=[...document.querySelectorAll('.card')];
-function select(el){
-  cards.forEach(c=>c.classList.remove('selected'));
-  el.classList.add('selected');
+const user=document.getElementById("user");
+const avatar=document.getElementById("avatar");
+const saldo=document.getElementById("saldo");
+const sound=document.getElementById("successSound");
+const USERS={};
+let currentUser=null;
+
+/* HAPTIC */
+function haptic(){
+  if(navigator.vibrate) navigator.vibrate(15);
 }
-function openSheet(){
-  document.getElementById('ov').style.display='flex';
+
+/* USER */
+user.oninput=()=>{
+  const u=user.value.trim();
+  if(!/^@[a-zA-Z0-9._-]{1,30}$/.test(u)){
+    lock(true);
+    saldo.textContent=0;
+    avatar.textContent="U";
+    return;
+  }
+  currentUser=u;
+  avatar.textContent=u[1].toUpperCase();
+  if(!USERS[u]) USERS[u]={saldo:0};
+  saldo.textContent=USERS[u].saldo;
+  lock(false);
+};
+
+/* LOCK */
+function lock(b){
+  document.querySelectorAll(".pkg")
+    .forEach(p=>p.classList.toggle("disabled",b));
 }
-function closeSheet(){
-  document.getElementById('ov').style.display='none';
+
+/* PACKAGES */
+document.querySelectorAll(".pkg").forEach(pkg=>{
+  pkg.onclick=()=>openConfirm(pkg,+pkg.dataset.c);
+});
+
+/* CONFIRM */
+function openConfirm(pkg,coins){
+  if(!currentUser)return;
+  haptic();
+
+  const o=document.createElement("div");
+  o.className="overlay";
+  o.innerHTML=`
+    <div class="sheet">
+      <div style="text-align:center;font-size:14px;color:#aaa">Confirmar compra</div>
+      <div style="text-align:center;font-size:26px;font-weight:800;margin:8px 0">${coins} monedas</div>
+      <button class="confirm">Confirmar</button>
+      <button class="cancel">Cancelar</button>
+    </div>`;
+  document.body.appendChild(o);
+
+  o.querySelector(".confirm").onclick=()=>{
+    o.remove();
+    cinematic(pkg,coins);
+  };
+  o.querySelector(".cancel").onclick=()=>o.remove();
 }
+
+/* CINEMATIC */
+function cinematic(pkg,coins){
+  haptic();
+  flyCoins(pkg);
+  animateBalance(coins);
+  setTimeout(()=>showSuccess(coins),900);
+}
+
+/* COINS */
+function flyCoins(pkg){
+  const r=pkg.getBoundingClientRect();
+  const s=saldo.getBoundingClientRect();
+  for(let i=0;i<6;i++){
+    setTimeout(()=>{
+      const c=document.createElement("div");
+      c.className="coin";
+      c.textContent="🪙";
+      c.style.left=r.left+"px";
+      c.style.top=r.top+"px";
+      document.body.appendChild(c);
+
+      setTimeout(()=>{
+        c.style.transform=`translate(${s.left-r.left}px,${s.top-r.top}px) scale(.4) rotate(360deg)`;
+        c.style.opacity=0;
+        particles(r.left+r.width/2,r.top);
+      },20);
+
+      setTimeout(()=>c.remove(),1000);
+    },i*90);
+  }
+}
+
+/* PARTICLES */
+function particles(x,y){
+  for(let i=0;i<4;i++){
+    const p=document.createElement("div");
+    p.className="particle";
+    p.style.left=x+"px";
+    p.style.top=y+"px";
+    document.body.appendChild(p);
+    const a=Math.random()*Math.PI*2;
+    const d=10+Math.random()*20;
+    setTimeout(()=>{
+      p.style.transform=`translate(${Math.cos(a)*d}px,${Math.sin(a)*d}px)`;
+      p.style.opacity=0;
+    },20);
+    setTimeout(()=>p.remove(),500);
+  }
+}
+
+/* BALANCE */
+function animateBalance(add){
+  const base=USERS[currentUser].saldo;
+  const target=base+add;
+  USERS[currentUser].saldo=target;
+  let cur=base;
+  const step=Math.ceil(add/12);
+
+  const i=setInterval(()=>{
+    cur+=step;
+    if(cur>=target){cur=target;clearInterval(i);}
+    saldo.textContent=cur;
+    saldo.style.transform="scale(1.15)";
+    setTimeout(()=>saldo.style.transform="scale(1)",100);
+  },50);
+}
+
+/* SUCCESS */
+function showSuccess(coins){
+  sound.play().catch(()=>{});
+  haptic();
+
+  const o=document.createElement("div");
+  o.className="overlay";
+  o.innerHTML=`
+    <div class="sheet success">
+      <div class="check">✓</div>
+      <div style="font-size:18px;font-weight:700">Compra realizada</div>
+      <div style="font-size:14px;color:#aaa;margin-top:4px">+${coins} monedas añadidas</div>
+    </div>`;
+  document.body.appendChild(o);
+
+  setTimeout(()=>o.remove(),1600);
+}
+
+lock(true);
 </script>
 </body>
 </html>
